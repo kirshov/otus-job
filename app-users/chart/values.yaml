@@ -1,0 +1,84 @@
+appName: app-users
+
+app:
+  dbHost: app-users-db-postgresql.kirshov-otus.svc.cluster.local
+  dbUser: postgres
+  dbPass: postgres_pass
+  dbName: users
+
+replicaCount: 1
+
+usersService:
+  name: app-users
+  image: kirshov/otus-users-service:latest
+  port:
+    name: app-users-port
+    containerPort: 8001
+  envFrom:
+    - configMapRef:
+        name: app-users-env
+
+serviceNginx:
+  name: nginx
+  image: nginx:latest
+  volumeMounts:
+    - name: app-users-nginx-config
+      mountPath: '/etc/nginx/conf.d'
+  portNumber: 80
+  portName: nginx
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+service:
+  type: ClusterIP
+  port: 80
+  name: service-users
+  portName: "users-web"
+
+ingress:
+  name: ingress-users
+  enabled: false
+  className: "nginx"
+  hosts:
+    - host: otus.project
+      paths:
+        - path: /login
+          pathType: Prefix
+        - path: /signin
+          pathType: Prefix
+        - path: /logout
+          pathType: Prefix
+        - path: /auth
+          pathType: Prefix
+  tls: []
+
+resources: {}
+
+volumes:
+  - name: app-users-nginx-config
+    configMap:
+      name: app-users-nginx-config
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+
+configMaps:
+  nginxUsersConfigMap: app-users-nginx-config
+  usersConfigMap: app-users-env
+
+migrationJob:
+  name: users-schema-migration-job
+  containers:
+    - name: users-schema-update
+      image: kirshov/otus-users-service:latest
+      command: [ '/bin/sh', '-c', 'php ./vendor/bin/phoenix migrate --config=./src/config/pheonix.php' ]
+      envFrom:
+        - configMapRef:
+            name: app-users-env
+  restartPolicy: Never
+  backoffLimit: 4

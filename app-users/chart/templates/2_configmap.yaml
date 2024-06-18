@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.configMaps.usersConfigMap }}
+data:
+  POSTGRES_HOST: {{ .Values.app.dbHost }}
+  POSTGRES_DB: {{ .Values.app.dbName }}
+  POSTGRES_USER: {{ .Values.app.dbUser }}
+  POSTGRES_PASSWORD: {{ .Values.app.dbPass }}
+
+---
+
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: {{ .Values.configMaps.nginxUsersConfigMap }}
+data:
+  app.conf: |
+    server {
+      listen 80;
+        index index.php;
+        error_log /var/log/nginx/error.log;
+        access_log /var/log/nginx/access.log;
+        root /app-users/public;
+
+        client_max_body_size 128m;
+
+        location / {
+            try_files $uri $uri/ /index.php?$args;
+        }
+
+        location ~ \.php$ {
+          if (!-e $request_filename){
+              rewrite ^(.*)$ /index.php break;
+          }
+
+          fastcgi_split_path_info ^(.+\.php)(/.+)$;
+          include fastcgi_params;
+          fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+          fastcgi_param PATH_INFO $fastcgi_path_info;
+          fastcgi_index index.php;
+          fastcgi_pass 127.0.0.1:9000;
+      }
+    }

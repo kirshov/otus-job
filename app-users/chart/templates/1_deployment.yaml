@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.usersService.name }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.usersService.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.usersService.name }}
+    spec:
+      containers:
+        - name: {{ .Values.usersService.name }}
+          image: {{ .Values.usersService.image }}
+          imagePullPolicy: Always
+          ports:
+            - name: {{ .Values.usersService.port.name }}
+              containerPort: {{ .Values.usersService.port.containerPort }}
+          envFrom:
+            {{- toYaml .Values.usersService.envFrom | nindent 12 }}
+
+        - name: {{ .Values.serviceNginx.name }}
+          image: {{ .Values.serviceNginx.image }}
+          ports:
+            - name: {{ .Values.serviceNginx.portName }}
+              containerPort: {{ .Values.serviceNginx.portNumber }}
+          volumeMounts:
+            {{- toYaml .Values.serviceNginx.volumeMounts | nindent 12 }}
+      volumes:
+        {{- toYaml .Values.volumes | nindent 12 }}

@@ -1,0 +1,15 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ .Values.migrationJob.name }}
+  annotations:
+    "helm.sh/hook": post-install, post-upgrade
+spec:
+  template:
+    spec:
+      containers:
+        {{- toYaml .Values.migrationJob.containers | nindent 12 }}
+      restartPolicy: {{ .Values.migrationJob.restartPolicy }}
+      volumes:
+        {{- toYaml .Values.migrationJob.volumes | nindent 12 }}
+  backoffLimit: {{ .Values.migrationJob.backoffLimit }}
