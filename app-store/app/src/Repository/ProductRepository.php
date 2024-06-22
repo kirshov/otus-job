@@ -8,7 +8,9 @@ use App\DTO\CreateProductDTO;
 use App\DTO\ProductDTO;
 use App\DTO\UpdateProductDTO;
 use App\Enum\StatusEnum;
+use Exception;
 use PDO;
+use Throwable;
 
 class ProductRepository
 {
@@ -19,6 +21,9 @@ class ProductRepository
 		private readonly PDO $db
 	){}
 
+	/**
+	 * @throws Exception
+	 */
 	public function getById(int $id): ProductDTO
 	{
 		$query = 'SELECT * FROM ' . self::TABLE . ' WHERE id = :id AND status = :status';
@@ -30,6 +35,10 @@ class ProductRepository
 		$stmt->execute($params);
 
 		$product = $stmt->fetch(PDO::FETCH_ASSOC);
+
+		if (empty($product)) {
+			throw new Exception('Товар не найден');
+		}
 
 		return new ProductDTO(
 			$product['id'],
@@ -108,5 +117,51 @@ class ProductRepository
 		}
 
 		return $result;
+	}
+
+	/**
+	 * @var UpdateProductDTO[] $products
+	 * @throws Throwable
+	 */
+	public function reserve(array $products): void
+	{
+		$this->db->beginTransaction();
+
+		try {
+			foreach ($products as $product) {
+				$selectQuery = 'SELECT * FROM ' . self::TABLE . ' WHERE id = :id AND status = :status FOR UPDATE';
+
+				$params = [
+					':id' => $product->id,
+					':status' => StatusEnum::ACTIVE->value
+				];
+				$stmt = $this->db->prepare($selectQuery);
+				$stmt->execute($params);
+
+				$productInDb = $stmt->fetch(PDO::FETCH_ASSOC);
+
+				if (empty($productInDb)) {
+					throw new Exception('Товар не найден');
+				}
+
+				if ($product->quantity === 0) {
+					throw new Exception('Необходимо указать количество для "' . $productInDb['name'] . '"');
+				}
+
+				if ((int)$productInDb['quantity'] < $product->quantity) {
+					throw new Exception('Не хватает количества для "' . $productInDb['name'] . '". Доступно: ' . $productInDb['quantity']);
+				}
+
+				$query = 'UPDATE ' . self::TABLE. ' SET quantity = quantity - ' . $product->quantity . ' WHERE id = :id';
+				$stmt = $this->db->prepare($query);
+				$stmt->execute(array_merge(['id' => $product->id]));
+			}
+
+			$this->db->commit();
+		} catch (Throwable $throwable) {
+			$this->db->rollBack();
+
+			throw $throwable;
+		}
 	}
 }

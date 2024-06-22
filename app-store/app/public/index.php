@@ -6,6 +6,7 @@ use App\Middleware\AfterMiddleware;
 use App\Middleware\JsonBodyParserMiddleware;
 use App\Repository\ProductRepository;
 use App\UseCase\Product\Create;
+use App\UseCase\Product\Reserve;
 use App\UseCase\Product\Update;
 use DI\Container;
 use Psr\Container\ContainerInterface;
@@ -107,7 +108,6 @@ $app->post('/create', function (Request $request, Response $response): Response
 	return $response;
 });
 
-
 $app->put('/update', function (Request $request, Response $response): Response
 {
 	$params = (array)$request->getParsedBody();
@@ -122,6 +122,43 @@ $app->put('/update', function (Request $request, Response $response): Response
 	try {
 		$handler = new Update($this->get('productRepository'));
 		$handler->run($product);
+
+		$result = [
+			'status' => 'success',
+		];
+	} catch (Throwable $throwable) {
+		$result = [
+			'status' => 'error',
+			'error' => $throwable->getMessage(),
+		];
+	}
+
+	$response->getBody()->write(json_encode($result, JSON_UNESCAPED_UNICODE));
+
+	return $response;
+});
+
+$app->post('/reserve', function (Request $request, Response $response): Response
+{
+	$params = (array)$request->getParsedBody();
+
+	try {
+		$items = $params['items'] ?? [];
+		$products = [];
+
+		if (empty($items)) {
+			throw new InvalidArgumentException('Не указан список товаров для резерва');
+		}
+
+		foreach ($items as $item) {
+			$products[] = new UpdateProductDTO(
+				id: (int)$item['id'],
+				quantity: (int)$item['quantity']
+			);
+		}
+
+		$handler = new Reserve($this->get('productRepository'));
+		$handler->run($products);
 
 		$result = [
 			'status' => 'success',
