@@ -1,2 +1,4 @@
 auth:
   password: "redis-pass"
+replica:
+  replicaCount: 1

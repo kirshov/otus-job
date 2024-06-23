@@ -4,12 +4,17 @@ declare(strict_types=1);
 
 namespace App\UseCase;
 
-use App\Services\AuthCookie;
+use App\Services\IAuthStorage;
 
 class Logout
 {
+	public function __construct(
+		private readonly IAuthStorage $authRedis,
+	) {
+	}
+
 	public function run(): void
 	{
-		AuthCookie::remove();
+		$this->authRedis::remove(session_id());
 	}
 }

@@ -1,4 +1,6 @@
 <?php
+error_reporting(E_ERROR);
+
 /**
  * @var ContainerInterface $container
  */

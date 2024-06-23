@@ -154,7 +154,7 @@ class ProductRepository
 
 				$query = 'UPDATE ' . self::TABLE. ' SET quantity = quantity - ' . $product->quantity . ' WHERE id = :id';
 				$stmt = $this->db->prepare($query);
-				$stmt->execute(array_merge(['id' => $product->id]));
+				$stmt->execute(['id' => $product->id]);
 			}
 
 			$this->db->commit();

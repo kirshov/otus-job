@@ -2,31 +2,29 @@
 
 namespace App\Services;
 
-class AuthCookie
+class AuthCookie implements IAuthStorage
 {
-	public const KEY = 'auth';
-
-	public static function set(?array $data):void
+	public static function set(string $key, ?array $data): void
 	{
 		setcookie(
-			self::KEY,
+			$key,
 			json_encode($data),
 			0,
 			"/"
 		);
 	}
 
-	public static function get(): ?array
+	public static function get($key): ?array
 	{
-		if (!isset($_COOKIE[self::KEY])) {
+		if (!isset($_COOKIE[$key])) {
 			return null;
 		}
 
-		return json_decode($_COOKIE[self::KEY], true);
+		return json_decode($_COOKIE[$key], true);
 	}
 
-	public static function remove(): void
+	public static function remove($key): void
 	{
-		self::set(null);
+		self::set($key, null);
 	}
 }

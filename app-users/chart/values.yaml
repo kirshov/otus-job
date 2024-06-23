@@ -5,6 +5,9 @@ app:
   dbUser: postgres
   dbPass: postgres_pass
   dbName: users
+  redisHost: redis-master.kirshov-otus.svc.cluster.local
+  redisPort: 6379
+  redisPassword: redis-pass
 
 replicaCount: 1
 

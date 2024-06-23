@@ -7,6 +7,9 @@ data:
   POSTGRES_DB: {{ .Values.app.dbName }}
   POSTGRES_USER: {{ .Values.app.dbUser }}
   POSTGRES_PASSWORD: {{ .Values.app.dbPass }}
+  REDIS_HOST: {{ .Values.app.redisHost }}
+  REDIS_PORT: {{ .Values.app.redisPort | quote }}
+  REDIS_PASSWORD: {{ .Values.app.redisPassword }}
 
 ---
 

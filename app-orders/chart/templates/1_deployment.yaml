@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.ordersService.name }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.ordersService.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.ordersService.name }}
+    spec:
+      containers:
+        - name: {{ .Values.ordersService.name }}
+          image: {{ .Values.ordersService.image }}
+          imagePullPolicy: Always
+          ports:
+            - name: {{ .Values.ordersService.port.name }}
+              containerPort: {{ .Values.ordersService.port.containerPort }}
+          envFrom:
+            {{- toYaml .Values.ordersService.envFrom | nindent 12 }}
+
+        - name: {{ .Values.serviceNginx.name }}
+          image: {{ .Values.serviceNginx.image }}
+          ports:
+            - name: {{ .Values.serviceNginx.portName }}
+              containerPort: {{ .Values.serviceNginx.portNumber }}
+          volumeMounts:
+            {{- toYaml .Values.serviceNginx.volumeMounts | nindent 12 }}
+      volumes:
+        {{- toYaml .Values.volumes | nindent 12 }}

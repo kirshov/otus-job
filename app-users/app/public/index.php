@@ -76,7 +76,10 @@ $app->post('/login', function (Request $request, Response $response): Response
 	);
 
 	try {
-		$handler = new Login($this->get('userRepository'));
+		$handler = new Login(
+			$this->get('userRepository'),
+			$this->get('authStorage')
+		);
 		$handler->run($user);
 
 		$result = [
@@ -117,7 +120,7 @@ $app->get('/auth', function (Request $request, Response $response): Response
 
 $app->get('/logout', function (Request $request, Response $response): Response
 {
-	(new Logout())->run();
+	(new Logout($this->get('authStorage')))->run();
 
 	return $response;
 });
