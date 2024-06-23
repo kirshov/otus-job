@@ -7,6 +7,7 @@ namespace App\UseCase\Order\Services;
 use App\DTO\OrderDTO;
 use App\DTO\SettingsDTO;
 use App\Helpers\HttpHelper;
+use App\Storages\UserStorage;
 use Exception;
 use Throwable;
 
@@ -52,6 +53,7 @@ class ReserveService implements IOrderSagaService
 			],
 			'headers' => [
 				'X-UserId' => $order->userId,
+				'X-Token' => UserStorage::getToken(),
 			]
 		]);
 	}

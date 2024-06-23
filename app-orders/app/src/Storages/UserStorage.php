@@ -9,6 +9,7 @@ class UserStorage
 	private static ?int $id = null;
 	private static ?string $email = null;
 	private static bool $isAdmin = false;
+	private static ?string $token = null;
 
 	public static function getId(): ?int
 	{
@@ -38,5 +39,15 @@ class UserStorage
 	public static function getIsAdmin(): bool
 	{
 		return self::$isAdmin;
+	}
+
+	public static function getToken(): ?string
+	{
+		return self::$token;
+	}
+
+	public static function setToken(?string $token): void
+	{
+		self::$token = $token;
 	}
 }

@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.billingService.name }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.billingService.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.billingService.name }}
+    spec:
+      containers:
+        - name: {{ .Values.billingService.name }}
+          image: {{ .Values.billingService.image }}
+          imagePullPolicy: Always
+          ports:
+            - name: {{ .Values.billingService.port.name }}
+              containerPort: {{ .Values.billingService.port.containerPort }}
+          envFrom:
+            {{- toYaml .Values.billingService.envFrom | nindent 12 }}
+
+        - name: {{ .Values.serviceNginx.name }}
+          image: {{ .Values.serviceNginx.image }}
+          ports:
+            - name: {{ .Values.serviceNginx.portName }}
+              containerPort: {{ .Values.serviceNginx.portNumber }}
+          volumeMounts:
+            {{- toYaml .Values.serviceNginx.volumeMounts | nindent 12 }}
+      volumes:
+        {{- toYaml .Values.volumes | nindent 12 }}

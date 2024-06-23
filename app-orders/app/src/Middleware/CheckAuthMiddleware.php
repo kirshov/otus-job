@@ -42,6 +42,7 @@ class CheckAuthMiddleware implements MiddlewareInterface
 
 			UserStorage::setId((int)$user['id']);
 			UserStorage::setEmail($user['email']);
+			UserStorage::setToken($token);
 		}
 
 		return $handler->handle($request);

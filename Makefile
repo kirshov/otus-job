@@ -17,7 +17,7 @@ mk-start:
 mk-stop: 
 	minikube stop
 
-install-all: install-users install-store
+install-all: install-users install-store install-orders install-billing
 
 install-users:
 	#helm upgrade --install app-users-db oci://registry-1.docker.io/bitnamicharts/postgresql -f  "./app-users/chart/postgres.yaml"  -n $(namespace)
@@ -30,6 +30,10 @@ install-store:
 install-orders:
 	#helm upgrade --install app-orders-db oci://registry-1.docker.io/bitnamicharts/postgresql -f  "./app-orders/chart/postgres.yaml"  -n $(namespace)
 	helm upgrade --install app-orders "./app-orders/chart" -n $(namespace)
+
+install-billing:
+	helm upgrade --install app-billing-db oci://registry-1.docker.io/bitnamicharts/postgresql -f  "./app-billing/chart/postgres.yaml"  -n $(namespace)
+	helm upgrade --install app-billing "./app-billing/chart" -n $(namespace)
 
 delete-namespace:
 	kubectl delete namespace $(namespace)
@@ -56,11 +60,17 @@ uninstall-orders:
 	#helm uninstall app-orders-db -n $(namespace)
 	#kubectl delete persistentvolumeclaim data-app-orders-db-postgresql-0 -n $(namespace)
 
-uninstall-all: uninstall-users uninstall-store delete-namespace uninstall-rabbit uninstall-redis
+uninstall-billing:
+	helm uninstall app-billing -n $(namespace)
+	#helm uninstall app-billing-db -n $(namespace)
+	#kubectl delete persistentvolumeclaim data-app-billing-db-postgresql-0 -n $(namespace)
+
+uninstall-all: uninstall-users uninstall-store uninstall-orders uninstall-billing delete-namespace uninstall-rabbit uninstall-redis
 
 port-forward:
 	kubectl port-forward --namespace kirshov-otus svc/app-users-db-postgresql 5431:5432 & \
     kubectl port-forward --namespace kirshov-otus svc/app-store-db-postgresql 5433:5432 & \
     kubectl port-forward --namespace kirshov-otus svc/app-orders-db-postgresql 5434:5432 & \
+    kubectl port-forward --namespace kirshov-otus svc/app-billing-db-postgresql 5435:5432 & \
     kubectl port-forward --namespace kirshov-otus svc/redis-master 6379:6379 & \
     kubectl port-forward --namespace kirshov-otus svc/rabbit-rabbitmq 15672:15672

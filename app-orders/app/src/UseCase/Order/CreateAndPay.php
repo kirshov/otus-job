@@ -72,6 +72,9 @@ class CreateAndPay
 			//Нотификация
 			$this->notifyService->sendSuccess($order, $email);
 			$this->logsRepository->add($order->userId, $order->id, 'Уведомление success отправлено');
+
+			$this->repository->markAsPaid($order->id);
+			$order->status = StatusEnum::PAID;
 		} catch (ReserveException $exception) {
 			//Ошибка резерва
 			$this->logsRepository->add($order->userId, $order->id, 'Не удалось зарезервировать товары: ' . $exception->getMessage());

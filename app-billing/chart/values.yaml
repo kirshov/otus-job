@@ -1,0 +1,87 @@
+appName: app-billing
+
+app:
+  dbHost: app-billing-db-postgresql.kirshov-otus.svc.cluster.local
+  dbUser: postgres
+  dbPass: postgres_pass
+  dbName: billing
+  redisHost: redis-master.kirshov-otus.svc.cluster.local
+  redisPort: 6379
+  redisPassword: redis-pass
+
+replicaCount: 1
+
+billingService:
+  name: app-billing
+  image: kirshov/otus-billing-service:latest
+  port:
+    name: app-bil-port
+    containerPort: 8004
+  envFrom:
+    - configMapRef:
+        name: billing-app-env
+
+serviceNginx:
+  name: nginx
+  image: nginx:latest
+  volumeMounts:
+    - name: app-billing-nginx-config
+      mountPath: '/etc/nginx/conf.d'
+  portNumber: 80
+  portName: ng-bil-port
+
+migrationJob:
+  name: billing-schema-migration-job
+  containers:
+    - name: billing-schema-update
+      image: kirshov/otus-billing-service:latest
+      command: [ '/bin/sh', '-c', 'php ./vendor/bin/phoenix migrate --config=./src/config/pheonix.php' ]
+      envFrom:
+        - configMapRef:
+            name: billing-app-env
+  restartPolicy: Never
+  backoffLimit: 4
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+service:
+  type: ClusterIP
+  port: 80
+  name: service-billing
+  portName: "billing-web"
+
+ingress:
+  name: ingress-billing
+  enabled: false
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.ingress.kubernetes.io/auth-url: "http://service-users.kirshov-otus.svc.cluster.local/auth"
+    nginx.ingress.kubernetes.io/auth-signin: "http://service-users.kirshov-otus.svc.cluster.local/signin"
+    nginx.ingress.kubernetes.io/auth-response-headers: "X-Token"
+  className: "nginx"
+  hosts:
+    - host: otus.project
+      paths:
+        - path: /billing(/|$)(.*)
+          pathType: ImplementationSpecific
+  tls: []
+
+resources: {}
+
+volumes:
+  - name: app-billing-nginx-config
+    configMap:
+      name: app-billing-nginx-config
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+
+configMaps:
+  nginxBillingConfigMap: app-billing-nginx-config
+  billingConfigMap: billing-app-env

@@ -8,7 +8,7 @@ use App\DTO\OrderDTO;
 use App\DTO\SettingsDTO;
 use App\Exceptions\BillingException;
 use App\Helpers\HttpHelper;
-use Exception;
+use App\Storages\UserStorage;
 use Throwable;
 
 class PaymentService implements IOrderSagaService
@@ -29,7 +29,7 @@ class PaymentService implements IOrderSagaService
 					'value' => $order->total,
 				],
 				'headers' => [
-					'X-UserId' => $order->userId,
+					'X-Token' => UserStorage::getToken(),
 				]
 			]);
 

@@ -141,7 +141,7 @@ class OrdersRepository
 
 	public function getAll(?int $page): array
 	{
-		$query = 'SELECT * FROM ' . self::TABLE . ' WHERE status = :status ORDER BY create_time DESC LIMIT ' . self::PER_PAGE;
+		$query = 'SELECT * FROM ' . self::TABLE . ' ORDER BY create_time DESC LIMIT ' . self::PER_PAGE;
 		$offset = 0;
 
 		if (is_numeric($page) && $page > 1) {
@@ -149,12 +149,9 @@ class OrdersRepository
 		}
 
 		$query .= ' OFFSET ' . $offset;
-		$params = [
-			':status' => StatusEnum::ACTIVE->value
-		];
 
 		$stmt = $this->db->prepare($query);
-		$stmt->execute($params);
+		$stmt->execute();
 
 		$ordersRaw = $stmt->fetchAll(PDO::FETCH_ASSOC);
 		$result = [];
@@ -170,5 +167,15 @@ class OrdersRepository
 		}
 
 		return $result;
+	}
+
+	public function markAsPaid(int $id): void
+	{
+		$query = 'UPDATE ' . self::TABLE. ' SET status = :status WHERE id = :id';
+		$stmt = $this->db->prepare($query);
+		$stmt->execute([
+			'id' => $id,
+			'status' => StatusEnum::PAID->value,
+		]);
 	}
 }
