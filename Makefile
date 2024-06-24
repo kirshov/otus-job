@@ -20,15 +20,15 @@ mk-stop:
 install-all: install-users install-store install-orders install-billing install-notify
 
 install-users:
-	#helm upgrade --install app-users-db oci://registry-1.docker.io/bitnamicharts/postgresql -f  "./app-users/chart/postgres.yaml"  -n $(namespace)
+	helm upgrade --install app-users-db oci://registry-1.docker.io/bitnamicharts/postgresql -f  "./app-users/chart/postgres.yaml"  -n $(namespace)
 	helm upgrade --install app-users "./app-users/chart" -n $(namespace)
 
 install-store:
-	#helm upgrade --install app-store-db oci://registry-1.docker.io/bitnamicharts/postgresql -f  "./app-store/chart/postgres.yaml"  -n $(namespace)
+	helm upgrade --install app-store-db oci://registry-1.docker.io/bitnamicharts/postgresql -f  "./app-store/chart/postgres.yaml"  -n $(namespace)
 	helm upgrade --install app-store "./app-store/chart" -n $(namespace)
 
 install-orders:
-	#helm upgrade --install app-orders-db oci://registry-1.docker.io/bitnamicharts/postgresql -f  "./app-orders/chart/postgres.yaml"  -n $(namespace)
+	helm upgrade --install app-orders-db oci://registry-1.docker.io/bitnamicharts/postgresql -f  "./app-orders/chart/postgres.yaml"  -n $(namespace)
 	helm upgrade --install app-orders "./app-orders/chart" -n $(namespace)
 
 install-billing:
@@ -51,28 +51,28 @@ uninstall-rabbit:
 
 uninstall-users:
 	helm uninstall app-users -n $(namespace)
-	#helm uninstall app-users-db -n $(namespace)
-	#kubectl delete persistentvolumeclaim data-app-users-db-postgresql-0 -n $(namespace)
+	helm uninstall app-users-db -n $(namespace)
+	kubectl delete persistentvolumeclaim data-app-users-db-postgresql-0 -n $(namespace)
 
 uninstall-store:
 	helm uninstall app-store -n $(namespace)
-	#helm uninstall app-store-db -n $(namespace)
-	#kubectl delete persistentvolumeclaim data-app-store-db-postgresql-0 -n $(namespace)
+	helm uninstall app-store-db -n $(namespace)
+	kubectl delete persistentvolumeclaim data-app-store-db-postgresql-0 -n $(namespace)
 
 uninstall-orders:
 	helm uninstall app-orders -n $(namespace)
-	#helm uninstall app-orders-db -n $(namespace)
-	#kubectl delete persistentvolumeclaim data-app-orders-db-postgresql-0 -n $(namespace)
+	helm uninstall app-orders-db -n $(namespace)
+	kubectl delete persistentvolumeclaim data-app-orders-db-postgresql-0 -n $(namespace)
 
 uninstall-billing:
 	helm uninstall app-billing -n $(namespace)
-	#helm uninstall app-billing-db -n $(namespace)
-	#kubectl delete persistentvolumeclaim data-app-billing-db-postgresql-0 -n $(namespace)
+	helm uninstall app-billing-db -n $(namespace)
+	kubectl delete persistentvolumeclaim data-app-billing-db-postgresql-0 -n $(namespace)
 
 uninstall-notify:
 	helm uninstall app-notify -n $(namespace)
-	#helm uninstall app-notify-db -n $(namespace)
-	#kubectl delete persistentvolumeclaim data-app-notify-db-postgresql-0 -n $(namespace)
+	helm uninstall app-notify-db -n $(namespace)
+	kubectl delete persistentvolumeclaim data-app-notify-db-postgresql-0 -n $(namespace)
 
 uninstall-all: uninstall-users uninstall-store uninstall-orders uninstall-billing delete-namespace uninstall-rabbit uninstall-redis
 

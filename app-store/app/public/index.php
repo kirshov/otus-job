@@ -3,8 +3,10 @@
 use App\DTO\CreateProductDTO;
 use App\DTO\UpdateProductDTO;
 use App\Middleware\AfterMiddleware;
+use App\Middleware\CheckAuthMiddleware;
 use App\Middleware\JsonBodyParserMiddleware;
 use App\Repository\ProductRepository;
+use App\Storages\UserStorage;
 use App\UseCase\Product\Create;
 use App\UseCase\Product\Reserve;
 use App\UseCase\Product\Update;
@@ -27,6 +29,7 @@ $container = include dirname(__DIR__) . '/src/config/container.php';
 $app->addRoutingMiddleware();
 $errorMiddleware = $app->addErrorMiddleware(true, true, true);
 
+$app->add(new CheckAuthMiddleware($container->get('redis')));
 $app->add(new JsonBodyParserMiddleware());
 $app->add(new AfterMiddleware());
 
@@ -80,15 +83,19 @@ $app->get('/list', function (Request $request, Response $response) {
 
 $app->post('/create', function (Request $request, Response $response): Response
 {
-	$params = (array)$request->getParsedBody();
-
-	$product = new CreateProductDTO(
-		name: $params['name'],
-		price: (int)$params['price'],
-		quantity: (int)$params['quantity']
-	);
-
 	try {
+		if (false === UserStorage::getIsAdmin()) {
+			throw new Exception('Доступ запрещен');
+		}
+
+		$params = (array)$request->getParsedBody();
+
+		$product = new CreateProductDTO(
+			name: $params['name'],
+			price: (int)$params['price'],
+			quantity: (int)$params['quantity']
+		);
+
 		$handler = new Create($this->get('productRepository'));
 		$id = $handler->run($product);
 
@@ -110,16 +117,20 @@ $app->post('/create', function (Request $request, Response $response): Response
 
 $app->put('/update', function (Request $request, Response $response): Response
 {
-	$params = (array)$request->getParsedBody();
-
-	$product = new UpdateProductDTO(
-		id: $params['id'] ?? null,
-		name: $params['name'] ?? null,
-		price: $params['price'] ?? null,
-		quantity: $params['quantity'] ?? null
-	);
-
 	try {
+		if (false === UserStorage::getIsAdmin()) {
+			throw new Exception('Доступ запрещен');
+		}
+
+		$params = (array)$request->getParsedBody();
+
+		$product = new UpdateProductDTO(
+			id: $params['id'] ?? null,
+			name: $params['name'] ?? null,
+			price: $params['price'] ?? null,
+			quantity: $params['quantity'] ?? null
+		);
+
 		$handler = new Update($this->get('productRepository'));
 		$handler->run($product);
 

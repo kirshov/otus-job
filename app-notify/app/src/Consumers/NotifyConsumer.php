@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Consumers;
 
+use App\Enum\StatusEnum;
 use App\Repository\NotifyRepository;
 use App\Services\RabbitService;
 
@@ -22,6 +23,6 @@ class NotifyConsumer implements IConsumer
 
 	public function handle(array $data): void
 	{
-		var_dump($data);
+		$this->notifyRepository->add((int)$data['userId'], $data['email'], $data['message'], StatusEnum::DONE);
 	}
 }

@@ -28,6 +28,7 @@
       <path value="$PROJECT_DIR$/app/vendor/symfony/finder" />
       <path value="$PROJECT_DIR$/app/vendor/php-di/php-di" />
       <path value="$PROJECT_DIR$/app/vendor/psr/http-server-handler" />
+      <path value="$PROJECT_DIR$/app/vendor/predis/predis" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.1">

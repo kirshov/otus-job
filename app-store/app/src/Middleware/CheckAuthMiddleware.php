@@ -36,19 +36,12 @@ class CheckAuthMiddleware implements MiddlewareInterface
 
 			}
 
-			if (empty($user)) {
-				$result = [
-					'status' => 'error',
-					'error' => 'Пользователь не определен',
-				];
-
-				echo json_encode($result, JSON_UNESCAPED_UNICODE);
-				exit();
+			if (!empty($user)) {
+				UserStorage::setId((int)$user['id']);
+				UserStorage::setEmail($user['email']);
+				UserStorage::setIsAdmin((bool)$user['isAdmin']);
+				UserStorage::setToken($token);
 			}
-
-			UserStorage::setId((int)$user['id']);
-			UserStorage::setEmail($user['email']);
-			UserStorage::setToken($token);
 		}
 
 		return $handler->handle($request);

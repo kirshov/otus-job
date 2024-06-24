@@ -10,21 +10,21 @@ use PDO;
 
 class NotifyRepository
 {
-	private const TABLE = 'notify_queue';
+	private const TABLE = 'queue';
 
 	public function __construct(
 		private readonly PDO $db
 	){}
 
-	public function add(int $userId, string $email, string $text): ?int
+	public function add(int $userId, string $email, string $text, StatusEnum $status = StatusEnum::WAIT): ?int
 	{
 		$query = 'INSERT INTO ' . self::TABLE. ' (id, user_id, email, text, status, create_time) 
-			VALUES (nextval(\'notify_queue_seq\'), :userId, :email, :text, :status, NOW())';
+			VALUES (nextval(\'' . self::TABLE . '_seq\'), :userId, :email, :text, :status, NOW())';
 		$params = [
 			':userId' => $userId,
 			':email' => $email,
 			':text' => $text,
-			':status' => StatusEnum::WAIT->value
+			':status' => $status->value
 		];
 		$stmt = $this->db->prepare($query);
 		$stmt->execute($params);

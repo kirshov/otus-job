@@ -34,11 +34,8 @@ class RabbitService
 		$this->channel->queue_declare($route, false, false, false, false);
 
 		$callback = function ($msg) use ($handler) {
-			var_dump('msg');
-			var_dump($msg);
 			try {
 				$data = json_decode($msg->getBody(), true);
-				var_dump($data);
 				$handler->handle($data);
 				$msg->ack();
 			} catch (Throwable $throwable) {
