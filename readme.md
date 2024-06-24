@@ -3,3 +3,5 @@
 make init
 ### Установить все приложения
 make install-all
+## Удалить проект
+uninstall-all
