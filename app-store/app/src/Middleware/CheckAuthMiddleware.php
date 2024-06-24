@@ -5,21 +5,38 @@ declare(strict_types=1);
 namespace App\Middleware;
 
 use App\Storages\UserStorage;
+use Predis\Client;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
+use Throwable;
 
 class CheckAuthMiddleware implements MiddlewareInterface
 {
+	public function __construct(
+		private readonly Client $redis
+	) {
+	}
+
 	public function process(Request $request, RequestHandler $handler): Response
 	{
-		$skipRequest = ['incoming'];
+		$skipRequest = [];
 
 		if (!in_array(trim($request->getRequestTarget(), '/'), $skipRequest)) {
-			$userId = $request->getHeader('X-UserId')[0] ?? null;
+			$token = $request->getHeader('X-Token')[0] ?? null;
+			$user = null;
 
-			if (null === $userId) {
+			try {
+				if (null !== $token) {
+					$userData = $this->redis->get($token);
+					$user = json_decode($userData, true);
+				}
+			} catch (Throwable $throwable) {
+
+			}
+
+			if (empty($user)) {
 				$result = [
 					'status' => 'error',
 					'error' => 'Пользователь не определен',
@@ -29,7 +46,9 @@ class CheckAuthMiddleware implements MiddlewareInterface
 				exit();
 			}
 
-			UserStorage::setUserId((int)$userId);
+			UserStorage::setId((int)$user['id']);
+			UserStorage::setEmail($user['email']);
+			UserStorage::setToken($token);
 		}
 
 		return $handler->handle($request);

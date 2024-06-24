@@ -10,6 +10,7 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
+use Throwable;
 
 class CheckAuthMiddleware implements MiddlewareInterface
 {
@@ -24,10 +25,15 @@ class CheckAuthMiddleware implements MiddlewareInterface
 
 		if (!in_array(trim($request->getRequestTarget(), '/'), $skipRequest)) {
 			$token = $request->getHeader('X-Token')[0] ?? null;
+			$user = null;
 
-			if (null !== $token) {
-				$userData = $this->redis->get($token);
-				$user = json_decode($userData, true);
+			try {
+				if (null !== $token) {
+					$userData = $this->redis->get($token);
+					$user = json_decode($userData, true);
+				}
+			} catch (Throwable $throwable) {
+
 			}
 
 			if (empty($user)) {

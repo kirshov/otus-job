@@ -1,0 +1,94 @@
+appName: app-notify
+
+app:
+  dbHost: app-notify-db-postgresql.kirshov-otus.svc.cluster.local
+  dbUser: postgres
+  dbPass: postgres_pass
+  dbName: notify
+  rabbitHost: rabbit-rabbitmq.kirshov-otus.svc.cluster.local
+  rabbitPort: 5672
+  rabbitUser: admin
+  rabbitPassword: rabbit-pass
+
+replicaCount: 1
+
+notifyService:
+  name: app-notify
+  image: kirshov/otus-notify-service:latest
+  port:
+    name: app-nf-port
+    containerPort: 8005
+  envFrom:
+    - configMapRef:
+        name: notify-app-env
+
+serviceNginx:
+  name: nginx
+  image: nginx:latest
+  volumeMounts:
+    - name: app-notify-nginx-config
+      mountPath: '/etc/nginx/conf.d'
+  portNumber: 80
+  portName: ng-nf-port
+
+migrationJob:
+  name: notify-schema-migration-job
+  containers:
+    - name: notify-schema-update
+      image: kirshov/otus-notify-service:latest
+      command: [ '/bin/sh', '-c', 'php ./vendor/bin/phoenix migrate --config=./src/config/pheonix.php' ]
+      envFrom:
+        - configMapRef:
+            name: notify-app-env
+  restartPolicy: Never
+  backoffLimit: 4
+
+senderConsumer:
+  name: notify-sender-consumer-job
+  containers:
+    - name: notify-consumer
+      image: kirshov/otus-notify-service:latest
+      command: [ '/bin/sh', '-c', 'php bin/console.php notifyConsumer' ]
+      envFrom:
+        - configMapRef:
+            name: notify-app-env
+  restartPolicy: Never
+  backoffLimit: 4
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+service:
+  type: ClusterIP
+  port: 80
+  name: service-notify
+  portName: "notify-web"
+
+ingress:
+  name: ingress-notify
+  enabled: false
+  className: "nginx"
+  hosts:
+    - host: arch.homework
+      paths:
+        - path: /notify(/|$)(.*)
+          pathType: ImplementationSpecific
+  tls: []
+
+resources: {}
+
+volumes:
+  - name: app-notify-nginx-config
+    configMap:
+      name: app-notify-nginx-config
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+
+configMaps:
+  nginxNotifyConfigMap: app-notify-nginx-config
+  notifyConfigMap: notify-app-env

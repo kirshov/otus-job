@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.notifyService.name }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.notifyService.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.notifyService.name }}
+    spec:
+      containers:
+        - name: {{ .Values.notifyService.name }}
+          image: {{ .Values.notifyService.image }}
+          imagePullPolicy: Always
+          ports:
+            - name: {{ .Values.notifyService.port.name }}
+              containerPort: {{ .Values.notifyService.port.containerPort }}
+          envFrom:
+            {{- toYaml .Values.notifyService.envFrom | nindent 12 }}
+
+        - name: {{ .Values.serviceNginx.name }}
+          image: {{ .Values.serviceNginx.image }}
+          ports:
+            - name: {{ .Values.serviceNginx.portName }}
+              containerPort: {{ .Values.serviceNginx.portNumber }}
+          volumeMounts:
+            {{- toYaml .Values.serviceNginx.volumeMounts | nindent 12 }}
+      volumes:
+        {{- toYaml .Values.volumes | nindent 12 }}

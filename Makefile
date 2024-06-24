@@ -17,7 +17,7 @@ mk-start:
 mk-stop: 
 	minikube stop
 
-install-all: install-users install-store install-orders install-billing
+install-all: install-users install-store install-orders install-billing install-notify
 
 install-users:
 	#helm upgrade --install app-users-db oci://registry-1.docker.io/bitnamicharts/postgresql -f  "./app-users/chart/postgres.yaml"  -n $(namespace)
@@ -34,6 +34,10 @@ install-orders:
 install-billing:
 	helm upgrade --install app-billing-db oci://registry-1.docker.io/bitnamicharts/postgresql -f  "./app-billing/chart/postgres.yaml"  -n $(namespace)
 	helm upgrade --install app-billing "./app-billing/chart" -n $(namespace)
+
+install-notify:
+	helm upgrade --install app-notify-db oci://registry-1.docker.io/bitnamicharts/postgresql -f  "./app-notify/chart/postgres.yaml"  -n $(namespace)
+	helm upgrade --install app-notify "./app-notify/chart" -n $(namespace)
 
 delete-namespace:
 	kubectl delete namespace $(namespace)
@@ -65,6 +69,11 @@ uninstall-billing:
 	#helm uninstall app-billing-db -n $(namespace)
 	#kubectl delete persistentvolumeclaim data-app-billing-db-postgresql-0 -n $(namespace)
 
+uninstall-notify:
+	helm uninstall app-notify -n $(namespace)
+	#helm uninstall app-notify-db -n $(namespace)
+	#kubectl delete persistentvolumeclaim data-app-notify-db-postgresql-0 -n $(namespace)
+
 uninstall-all: uninstall-users uninstall-store uninstall-orders uninstall-billing delete-namespace uninstall-rabbit uninstall-redis
 
 port-forward:
@@ -72,5 +81,6 @@ port-forward:
     kubectl port-forward --namespace kirshov-otus svc/app-store-db-postgresql 5433:5432 & \
     kubectl port-forward --namespace kirshov-otus svc/app-orders-db-postgresql 5434:5432 & \
     kubectl port-forward --namespace kirshov-otus svc/app-billing-db-postgresql 5435:5432 & \
+    kubectl port-forward --namespace kirshov-otus svc/app-notify-db-postgresql 5436:5432 & \
     kubectl port-forward --namespace kirshov-otus svc/redis-master 6379:6379 & \
     kubectl port-forward --namespace kirshov-otus svc/rabbit-rabbitmq 15672:15672
