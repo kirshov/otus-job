@@ -1,0 +1,13 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: rabbit-monitor
+spec:
+  jobLabel: rabbit-monitor
+  selector:
+    matchLabels:
+      app: rabbit-monitor
+  endpoints:
+    - interval: 12s
+      port: "15692"
+      path: "metrics"

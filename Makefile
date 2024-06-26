@@ -8,6 +8,8 @@ init:
 	kubectl apply -f https://raw.githubusercontent.com/rancher/local-path-provisioner/master/deploy/local-path-storage.yaml
 	helm upgrade --install redis oci://registry-1.docker.io/bitnamicharts/redis -f "./.helm/redis/values.yaml" -n $(namespace)
 	helm upgrade --install rabbit oci://registry-1.docker.io/bitnamicharts/rabbitmq -f "./.helm/rabbit/values.yaml" -n $(namespace)
+	helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+	helm upgrade --install prometheus prometheus-community/kube-prometheus-stack -f "./.helm/prometheus/values.yaml"
 
 
 mk-start: 
@@ -82,5 +84,8 @@ port-forward:
     kubectl port-forward --namespace kirshov-otus svc/app-orders-db-postgresql 5434:5432 & \
     kubectl port-forward --namespace kirshov-otus svc/app-billing-db-postgresql 5435:5432 & \
     kubectl port-forward --namespace kirshov-otus svc/app-notify-db-postgresql 5436:5432 & \
-    kubectl port-forward --namespace kirshov-otus svc/redis-master 6379:6379 & \
-    kubectl port-forward --namespace kirshov-otus svc/rabbit-rabbitmq 15672:15672
+    kubectl port-forward --namespace kirshov-otus svc/rabbit-rabbitmq 15672:15672 & \
+    kubectl port-forward service/prometheus-operated 9090 & \
+    kubectl port-forward service/prometheus-grafana 3000:80 & \
+    kubectl port-forward --namespace kirshov-otus svc/redis-master 6379:6379
+#    Доступ к grafana admin/prom-operator
