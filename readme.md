@@ -5,3 +5,6 @@ make init
 make install-all
 ## Удалить проект
 uninstall-all
+
+###
+Доступ к grafana admin/prom-operator

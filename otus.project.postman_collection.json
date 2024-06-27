@@ -1,0 +1,815 @@
+{
+	"info": {
+		"_postman_id": "ea12b068-ac9e-4f8e-b423-eafdf526451c",
+		"name": "otus.project",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "25030056"
+	},
+	"item": [
+		{
+			"name": "notify",
+			"item": [
+				{
+					"name": "all",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{notifyUrl}}/all",
+							"host": [
+								"{{notifyUrl}}"
+							],
+							"path": [
+								"all"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get last",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{notifyUrl}}/get-last",
+							"host": [
+								"{{notifyUrl}}"
+							],
+							"path": [
+								"get-last"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "billing",
+			"item": [
+				{
+					"name": "create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "{{billingUrl}}/create",
+							"host": [
+								"{{billingUrl}}"
+							],
+							"path": [
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "incoming",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-UserId",
+								"value": "1",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"userId\": 2,\n    \"value\": 200\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{billingUrl}}/incoming",
+							"host": [
+								"{{billingUrl}}"
+							],
+							"path": [
+								"incoming"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "pay",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"value\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:82/pay",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "82",
+							"path": [
+								"pay"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{billingUrl}}/get",
+							"host": [
+								"{{billingUrl}}"
+							],
+							"path": [
+								"get"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "users",
+			"item": [
+				{
+					"name": "seed",
+					"item": [
+						{
+							"name": "Иванов Иван",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "email",
+											"value": "ivanov@test.test",
+											"type": "text"
+										},
+										{
+											"key": "name",
+											"value": "Иванов Иван",
+											"type": "text"
+										},
+										{
+											"key": "password",
+											"value": "ivanov",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{authUrl}}/signin",
+									"host": [
+										"{{authUrl}}"
+									],
+									"path": [
+										"signin"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Петров Петр",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "email",
+											"value": "petrov@test.test",
+											"type": "text"
+										},
+										{
+											"key": "name",
+											"value": "Петров Петр",
+											"type": "text"
+										},
+										{
+											"key": "password",
+											"value": "petrov",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{authUrl}}/signin",
+									"host": [
+										"{{authUrl}}"
+									],
+									"path": [
+										"signin"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "signin",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "email",
+									"value": "test@test.test",
+									"type": "text"
+								},
+								{
+									"key": "name",
+									"value": "test name",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "password",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{authUrl}}/signin",
+							"host": [
+								"{{authUrl}}"
+							],
+							"path": [
+								"signin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "login admin",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "email",
+									"value": "ivanov@test.test",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "ivanov",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{authUrl}}/login",
+							"host": [
+								"{{authUrl}}"
+							],
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "login user",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "email",
+									"value": "petrov@test.test",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "petrov",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{authUrl}}/login",
+							"host": [
+								"{{authUrl}}"
+							],
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "auth",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "{{authUrl}}/auth",
+							"host": [
+								"{{authUrl}}"
+							],
+							"path": [
+								"auth"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "logout",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{authUrl}}/logout",
+							"host": [
+								"{{authUrl}}"
+							],
+							"path": [
+								"logout"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "products",
+			"item": [
+				{
+					"name": "seed",
+					"item": [
+						{
+							"name": "Шуруповерт Makita",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Шуруповерт Makita\",\n    \"price\": 2000,\n    \"quantity\": 30\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{storeUrl}}/create",
+									"host": [
+										"{{storeUrl}}"
+									],
+									"path": [
+										"create"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Дрель Bosh",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Дрель Bosh\",\n    \"price\": 2500,\n    \"quantity\": 10\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{storeUrl}}/create",
+									"host": [
+										"{{storeUrl}}"
+									],
+									"path": [
+										"create"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Пена монтажная TITAN",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Пена монтажная TITAN\",\n    \"price\": 700,\n    \"quantity\": 5\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{storeUrl}}/create",
+									"host": [
+										"{{storeUrl}}"
+									],
+									"path": [
+										"create"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Уровень строительный",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Уровень строительный\",\n    \"price\": 200,\n    \"quantity\": 2\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{storeUrl}}/create",
+									"host": [
+										"{{storeUrl}}"
+									],
+									"path": [
+										"create"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Набор отверток",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Набор отверток\",\n    \"price\": 250,\n    \"quantity\": 2\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{storeUrl}}/create",
+									"host": [
+										"{{storeUrl}}"
+									],
+									"path": [
+										"create"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Молоток",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Молоток\",\n    \"price\": 280,\n    \"quantity\": 2\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{storeUrl}}/create",
+									"host": [
+										"{{storeUrl}}"
+									],
+									"path": [
+										"create"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Товар\",\n    \"price\": 100,\n    \"quantity\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{storeUrl}}/create",
+							"host": [
+								"{{storeUrl}}"
+							],
+							"path": [
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "X-Token",
+								"value": "21288cca619de312295322898cc4a6d4",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": 19,\n    \"quantity\": 100,\n    \"price\": 100\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{storeUrl}}/update",
+							"host": [
+								"{{storeUrl}}"
+							],
+							"path": [
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "reserve",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"items\": [\n        {\n            \"id\": 14,\n            \"quantity\": 1\n        },\n        {\n            \"id\": 15,\n            \"quantity\": 2\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{storeUrl}}/reserve",
+							"host": [
+								"{{storeUrl}}"
+							],
+							"path": [
+								"reserve"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "{{storeUrl}}/?id=19",
+							"host": [
+								"{{storeUrl}}"
+							],
+							"path": [
+								""
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "19"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "list",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{storeUrl}}/list?page=1",
+							"host": [
+								"{{storeUrl}}"
+							],
+							"path": [
+								"list"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "orders",
+			"item": [
+				{
+					"name": "createOrder",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-Idempotency-Key",
+								"value": "5163c01deaf54c2a814c71a2",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"items\": [\n        {\n            \"id\": 14,\n            \"name\": \"Шуруповерт Makita\",\n            \"quantity\": 30,\n            \"price\": 2000\n        },\n        {\n            \"id\": 15,\n            \"name\": \"Дрель Bosh\",\n            \"quantity\": 1,\n            \"price\": 2500\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{ordersUrl}}/create",
+							"host": [
+								"{{ordersUrl}}"
+							],
+							"path": [
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createOrder2",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-Idempotency-Key",
+								"value": "5163c01deaf54c2a814c71a6",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"items\": [\n        {\n            \"id\": 19,\n            \"name\": \"Молоток\",\n            \"quantity\": 1,\n            \"price\": 100\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{ordersUrl}}/create",
+							"host": [
+								"{{ordersUrl}}"
+							],
+							"path": [
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "list",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{ordersUrl}}/list",
+							"host": [
+								"{{ordersUrl}}"
+							],
+							"path": [
+								"list"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "authUrl",
+			"value": "http://otus.project",
+			"type": "string"
+		},
+		{
+			"key": "storeUrl",
+			"value": "http://otus.project/store",
+			"type": "string"
+		},
+		{
+			"key": "ordersUrl",
+			"value": "http://otus.project/orders",
+			"type": "string"
+		},
+		{
+			"key": "billingUrl",
+			"value": "http://otus.project/billing",
+			"type": "string"
+		},
+		{
+			"key": "notifyUrl",
+			"value": "http://otus.project/notify",
+			"type": "string"
+		}
+	]
+}

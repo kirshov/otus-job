@@ -86,6 +86,4 @@ port-forward:
     kubectl port-forward --namespace kirshov-otus svc/app-notify-db-postgresql 5436:5432 & \
     kubectl port-forward --namespace kirshov-otus svc/rabbit-rabbitmq 15672:15672 & \
     kubectl port-forward service/prometheus-operated 9090 & \
-    kubectl port-forward service/prometheus-grafana 3000:80 & \
-    kubectl port-forward --namespace kirshov-otus svc/redis-master 6379:6379
-#    Доступ к grafana admin/prom-operator
+    kubectl port-forward service/prometheus-grafana 3000:80
